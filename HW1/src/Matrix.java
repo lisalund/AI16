@@ -10,11 +10,22 @@ public class Matrix {
 	public int columns;
 	public double[][] mat;
 	
-	
+	/**
+	 * Constructor for unfilled matrices, where we do not know the values yet
+	 */
 	public Matrix(int rows, int columns){
 		this.rows = rows;
 		this.columns = columns;
 		this.mat = new double[rows][columns];
+	}
+	
+	/**
+	 * Constructor for complete, filled-out matrices
+	 */
+	public Matrix(int rows, int columns, double[][] matrix){
+		this.rows = rows;
+		this.columns = columns;
+		this.mat = matrix;
 	}
 	
 	/**
@@ -31,6 +42,29 @@ public class Matrix {
 				tokensOffset++;
 			}
 		}
+	}
+	
+	/**
+	 * Returns the two-dimentional matrix
+	 */
+	public double[][] getMatrix(){
+		return mat;
+	}
+	
+	/**
+	 * 
+	 * @return the transposed matrix as a Matrix object
+	 */
+	public Matrix transpose(){
+		double[][] trans = new double[columns][rows];
+		
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < columns; j++){
+				trans[j][i] = mat[i][j];
+			}
+		}
+
+		return new Matrix(columns, rows, trans);
 	}
 	
 	/**
