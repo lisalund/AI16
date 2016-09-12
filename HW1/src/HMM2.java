@@ -1,5 +1,5 @@
 public class HMM2 {
-	HMM2() {
+	private HMM2() {
 		Utility u = new Utility();
 
 		Matrix a = u.parseMatrix();
@@ -20,11 +20,7 @@ public class HMM2 {
 		System.out.println(alpha.getColumn(alpha.columns - 1).sum());
 	}
 	
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		new HMM2();
 	}
-
 }
