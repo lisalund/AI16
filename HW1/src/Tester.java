@@ -1,13 +1,16 @@
-
 public class Tester {
-
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		HMM1 hmm = new HMM1();
-		hmm.parse();
-		hmm.printMatrices();
+		Utility u = new Utility();
+
+		Matrix a = u.parseMatrix();
+		Matrix b = u.parseMatrix();
+		Matrix pi = u.parseMatrix();
+
+		hmm.printMatrices(a, b, pi);
 
 		runTests();
 	}

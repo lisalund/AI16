@@ -1,15 +1,13 @@
-
 /**
  * Class for the matrices used in the HMM lab
  * @author lisa
  *
  */
 public class Matrix {
-	
 	public int rows;
 	public int columns;
 	public double[][] mat;
-	
+
 	/**
 	 * Constructor for unfilled matrices, where we do not know the values yet
 	 */
@@ -18,23 +16,18 @@ public class Matrix {
 		this.columns = columns;
 		this.mat = new double[rows][columns];
 	}
-	
-	/**
-	 * Constructor for complete, filled-out matrices
-	 */
-	public Matrix(int rows, int columns, double[][] matrix){
-		this.rows = rows;
-		this.columns = columns;
-		this.mat = matrix;
-	}
-	
+
 	/**
 	 * Fills the matrix with values from the token array given.
-	 * Note that the first two values in tokens are 
+	 * Note that the first two values in tokens are
 	 * row and column data, so these should be skipped.
 	 * @param tokens
 	 */
-	public void fillMatrix(String[] tokens){
+	public Matrix(String[] tokens) {
+		this.rows = Integer.parseInt(tokens[0]);
+		this.columns = Integer.parseInt(tokens[1]);
+		this.mat = new double[rows][columns];
+
 		int tokensOffset = 2;
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < columns; j++){
@@ -43,7 +36,16 @@ public class Matrix {
 			}
 		}
 	}
-	
+
+	/**
+	 * Constructor for complete, filled-out matrices
+	 */
+	public Matrix(int rows, int columns, double[][] matrix) {
+		this.rows = rows;
+		this.columns = columns;
+		this.mat = matrix;
+	}
+
 	/**
 	 * Returns the two-dimentional matrix
 	 */
