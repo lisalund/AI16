@@ -82,7 +82,26 @@ public class Matrix {
 		}
 		return col;
 	}
-	
+
+	/**
+	 * Overwrites a column in this with another column of the same height.
+	 * @param column
+	 * @param matrix
+	 */
+	public void setColumn(int column, Matrix matrix) {
+		if ((this.rows != matrix.rows || this.columns != matrix.columns) && !(matrix.rows == 1 || matrix.columns == 1)) {
+			throw new IllegalArgumentException("Input matrix must be a vector with the same length as a matrix column.");
+		}
+
+		for (int i = 0; i < rows; i++) {
+			if (matrix.columns == 1) {
+				mat[i][column] = matrix.mat[i][0];
+			} else {
+				mat[i][column] = matrix.mat[0][i];
+			}
+		}
+	}
+
 	/**
 	 * @return a String representing the matrix, as defined by the HW instructions:
 	 * rows columns followed by data contained, row for row.

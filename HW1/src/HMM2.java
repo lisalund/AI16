@@ -1,31 +1,23 @@
 public class HMM2 {
-	/**
-	 * Matrices A (transitions), B (emissions), and pi (initial distributions)
-	 */
-	private Matrix a;
-	private Matrix b;
-	private Matrix pi;
-	private int[] o;
-
 	HMM2() {
 		Utility u = new Utility();
 
-		a = u.parseMatrix();
-		b = u.parseMatrix();
-		pi = u.parseMatrix();
-		o = u.parseEmissions();
+		Matrix a = u.parseMatrix();
+		Matrix b = u.parseMatrix();
+		Matrix pi = u.parseMatrix();
+		int[] o = u.parseEmissions();
 
-		Matrix[] alphas = new Matrix[o.length];
+		Matrix alpha = new Matrix(a.rows, o.length);
+		Matrix alphaCol = pi.multiplyElementWise(b.getColumn(o[0]));
+		alpha.setColumn(0, alphaCol);
 
-		Matrix alpha1 = pi.multiplyElementWise(b.getColumn(o[0]));
-		alphas[0] = alpha1;
-
-		for (int i = 1; i < alphas.length; i++) {
-			Matrix alpha = alphas[i - 1].multiply(a).multiplyElementWise(b.getColumn(o[i]));
-			alphas[i] = alpha;
+		for (int i = 1; i < alpha.columns; i++) {
+			alphaCol = alpha.getColumn(i - 1).transpose() // alpha col transposed to a row before multiplying
+					.multiply(a).multiplyElementWise(b.getColumn(o[i]));
+			alpha.setColumn(i, alphaCol);
 		}
 
-		System.out.println(alphas[alphas.length - 1].sum());
+		System.out.println(alpha.getColumn(alpha.columns - 1).sum());
 	}
 	
 	/**
