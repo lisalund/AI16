@@ -29,9 +29,10 @@ public class Utility {
 			strLine = buf.readLine();
 			String[] tokens = strLine.split(" ");
 
-			int[] emissions = new int[tokens.length];
-			for (int i = 0; i < tokens.length; i++) {
-				emissions[i] = Integer.parseInt(tokens[i]);
+			int sequenceLength = Integer.parseInt(tokens[0]);
+			int[] emissions = new int[sequenceLength];
+			for (int i = 1; i <= sequenceLength; i++) {
+				emissions[i - 1] = Integer.parseInt(tokens[i]);
 			}
 
 			return emissions;
