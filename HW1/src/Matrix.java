@@ -70,6 +70,20 @@ public class Matrix {
 	}
 	
 	/**
+	 * 
+	 * @param column the index of the column wanted (0 indexed)
+	 * @return a column vector from the matrix
+	 */
+	public Matrix getColumn(int column){
+		Matrix col = new Matrix(rows, 1, new double[rows][1]);
+		
+		for(int i = 0; i < rows; i++){
+			col.mat[i][1] = mat[i][column];
+		}
+		return col;
+	}
+	
+	/**
 	 * @return a String representing the matrix, as defined by the HW instructions:
 	 * rows columns followed by data contained, row for row.
 	 */
