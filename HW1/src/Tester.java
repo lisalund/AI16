@@ -1,21 +1,17 @@
 public class Tester {
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		HMM1 hmm = new HMM1();
 		Utility u = new Utility();
 
 		Matrix a = u.parseMatrix();
 		Matrix b = u.parseMatrix();
 		Matrix pi = u.parseMatrix();
 
-		hmm.printMatrices(a, b, pi);
+		printMatrices(a, b, pi);
 
 		runTests();
 	}
 
-	public static void runTests() {
+	private static void runTests() {
 		double[][] aMatrix = {
 				{1, 2, 3},
 				{4, 5, 6}
@@ -33,4 +29,14 @@ public class Tester {
 		res.printMatrix();
 	}
 
+	private static void printMatrices(Matrix a, Matrix b, Matrix pi) {
+		System.out.println("A: ");
+		System.out.println(a.toString());
+
+		System.out.println("B: ");
+		System.out.println(b.toString());
+
+		System.out.println("pi: ");
+		System.out.println(pi.toString());
+	}
 }
