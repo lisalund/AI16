@@ -85,4 +85,36 @@ public class Matrix {
 		return sb.toString();
 	}
 
+	public Matrix multiply(Matrix rightMatrix) {
+		double[][] a = mat;
+		double[][] b = rightMatrix.mat;
+
+		double[][] res = new double[a.length][b[0].length];
+
+		int rows = res.length;
+		int cols = res[0].length;
+		int innerLength = a[0].length; // == b.length, m in formula
+
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				for (int k = 0; k < innerLength; k++) {
+					res[i][j] += a[i][k] * b[k][j];
+				}
+			}
+		}
+
+
+		return new Matrix(rows, cols, res);
+	}
+
+	public void printMatrix() {
+		double[][] matrix = mat;
+
+		for (double[] row : matrix) {
+			for (double elem : row) {
+				System.out.print(elem + " ");
+			}
+			System.out.println();
+		}
+	}
 }
