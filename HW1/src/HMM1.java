@@ -1,5 +1,6 @@
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class HMM1 {
 	/**
@@ -8,9 +9,17 @@ public class HMM1 {
 	private Matrix A;
 	private Matrix B;
 	private Matrix pi;
+
+	HMM1() {
+		parse();
+
+		System.out.println((pi.multiply(A)).multiply(B));
+	}
+
+	public static void main(String[] args) {
+		new HMM1();
+	}
 	
-	
-	//TODO main
 	/**
 	 * Parses matrices from input
 	 */
