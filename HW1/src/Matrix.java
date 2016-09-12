@@ -78,7 +78,7 @@ public class Matrix {
 		Matrix col = new Matrix(rows, 1, new double[rows][1]);
 		
 		for(int i = 0; i < rows; i++){
-			col.mat[i][1] = mat[i][column];
+			col.mat[i][0] = mat[i][column];
 		}
 		return col;
 	}
@@ -123,6 +123,27 @@ public class Matrix {
 		return new Matrix(rows, cols, res);
 	}
 
+	public Matrix multiplyElementWise(Matrix rightMatrix) {
+		double[][] a = mat;
+		double[][] b = rightMatrix.getMatrix();
+
+		double[][] res = new double[rows][columns];
+
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				if (a.length == b.length && a[0].length == b[0].length) {
+					res[i][j] = a[i][j] * b[i][j];
+				} else if (a.length == b[0].length && b.length == a[0].length) {
+					res[i][j] = a[i][j] * b[j][i];
+				} else {
+					throw new IllegalArgumentException("Matrices must be of equal size (possibly when transposed).");
+				}
+			}
+		}
+
+		return new Matrix(rows, columns, res);
+	}
+
 	public void printMatrix() {
 		double[][] matrix = mat;
 
@@ -132,5 +153,21 @@ public class Matrix {
 			}
 			System.out.println();
 		}
+	}
+
+	/**
+	 * Returns the sum of all elements.
+	 *
+	 * @return
+	 */
+	public double sum() {
+		double sum = 0;
+		for (double[] row : mat) {
+			for (double element : row) {
+				sum += element;
+			}
+		}
+
+		return sum;
 	}
 }
