@@ -2,14 +2,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Utility {
-	BufferedReader buf;
+class Utility {
+	private BufferedReader buf;
 
 	Utility() {
 		buf = new BufferedReader(new InputStreamReader(System.in));
 	}
 
-	public Matrix parseMatrix() {
+	Matrix parseMatrix() {
 		try {
 			String strLine;
 			strLine = buf.readLine();
@@ -23,7 +23,7 @@ public class Utility {
 		return null;
 	}
 
-	public int[] parseEmissions() {
+	int[] parseEmissions() {
 		try {
 			String strLine;
 			strLine = buf.readLine();
@@ -42,5 +42,17 @@ public class Utility {
 
 		return null;
 
+	}
+
+	/**
+	 * Print an array as specified output.
+	 */
+	public void printArray(int[] array) {
+		for (int i = 0; i < array.length; i++) {
+			System.out.print(i);
+			if (i != array.length - 1) {
+				System.out.print(" ");
+			}
+		}
 	}
 }

@@ -37,7 +37,7 @@ public class HMM3 {
 			states.setColumn(i, stateCol);
 		}
 
-		findStateSequence(delta, states);
+		u.printArray(findStateSequence(delta, states));
 	}
 
 	public static void main(String[] args) {
