@@ -82,7 +82,7 @@ public class Matrix {
 
 		return new Matrix(columns, rows, trans);
 	}
-	
+
 	/**
 	 * 
 	 * @param column the index of the column wanted (0 indexed)
@@ -95,6 +95,18 @@ public class Matrix {
 			col.mat[i][0] = mat[i][column];
 		}
 		return col;
+	}
+
+	/**
+	 * Get a (zero-indexed) row.
+	 */
+	public Matrix getRow(int rowIndex) {
+		Matrix row = new Matrix(1, columns);
+
+		for (int i = 0; i < columns; i++) {
+			row.mat[0][i] = mat[rowIndex][i];
+		}
+		return row;
 	}
 
 	/**
@@ -114,6 +126,17 @@ public class Matrix {
 				mat[i][column] = matrix.mat[0][i];
 			}
 		}
+	}
+
+	/**
+	 * Returns a value in the matrix (zero-indexed).
+	 *
+	 * @param row
+	 * @param column
+	 * @return
+	 */
+	public double getElement(int row, int column) {
+		return mat[row][column];
 	}
 
 	/**
