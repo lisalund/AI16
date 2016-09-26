@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Class for the matrices used in the HMM lab
  * @author lisa
@@ -44,6 +46,18 @@ public class Matrix {
 		this.rows = rows;
 		this.columns = columns;
 		this.mat = matrix;
+	}
+	
+	/**
+	 * Constructor for a matrix with all non-zero values
+	 */
+	public Matrix(int rows, int columns, double fillWith) {
+		this.rows = rows;
+		this.columns = columns;
+		this.mat = new double[rows][columns];
+		for(double[] row : mat){
+			Arrays.fill(row, fillWith);
+		}
 	}
 
 	/**
