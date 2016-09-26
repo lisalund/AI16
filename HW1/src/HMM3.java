@@ -81,6 +81,22 @@ public class HMM3 {
 	}
 
 	private int[] findStateSequence(Matrix delta, Matrix states) {
-		return null;
+		int[] stateSequence = new int[delta.columns];
+
+		double max = -1;
+		int maxState = -1;
+		for (int i = 0; i < delta.columns; i++) {
+			for (int j = 0; j < delta.rows; j++) {
+				double value = delta.getElement(j, i);
+				if (max > value) {
+					max = value;
+					maxState = (int) states.getElement(j, i);
+				}
+			}
+
+			stateSequence[i] = maxState;
+		}
+
+		return stateSequence;
 	}
 }
