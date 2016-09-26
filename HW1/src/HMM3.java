@@ -1,5 +1,5 @@
 public class HMM3 {
-	HMM3() {
+	private HMM3() {
 		Utility u = new Utility();
 
 		// Parse input
@@ -9,6 +9,7 @@ public class HMM3 {
 		int[] o = u.parseEmissions();
 
 		Matrix delta = new Matrix(a.rows, o.length);
+		Matrix states = new Matrix(a.rows, o.length, -1);
 
 		Matrix deltaCol = pi.transpose().multiplyElementWise(b.getColumn(o[0]));
 		delta.setColumn(0, deltaCol);
@@ -28,18 +29,38 @@ public class HMM3 {
 				maxCols[j] = fullMaxCol;
 			}
 
+			// From maxCols, extract both delta column and state column
+			deltaCol = calculateDeltaColumn(maxCols);
+			Matrix stateCol = calculateStateColumn(maxCols);
+
+			delta.setColumn(i, deltaCol);
+			states.setColumn(i, stateCol);
 		}
 
+		findStateSequence(delta, states);
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		new HMM3();
 	}
 
-	private Matrix calculateMaxes(Matrix[] maxCols) {
+	private Matrix calculateDeltaColumn(Matrix[] maxCols) {
+		Matrix deltaCol = new Matrix(maxCols[0].rows, 1, -1);
+
+		// For every row of a maxcol
+		for (int i = 0; i < maxCols[0].rows; i++) {
+			double max = -1;
+			for (int j = 0; j < maxCols.length; j++) {
+				max = Math.max(max, maxCols[j].getElement(j, 0));
+			}
+
+			deltaCol.setElement(i, 0, max);
+		}
+
+		return deltaCol;
+	}
+
+	private Matrix calculateStateColumn(Matrix[] maxCols) {
 		Matrix states = new Matrix(maxCols[0].rows, 1, -1);
 
 		// For every row of a maxcol
@@ -57,5 +78,9 @@ public class HMM3 {
 		}
 
 		return states;
+	}
+
+	private int[] findStateSequence(Matrix delta, Matrix states) {
+		return null;
 	}
 }
