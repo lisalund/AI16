@@ -128,6 +128,10 @@ public class Matrix {
 		}
 	}
 
+	public void setElement(int row, int column, double value) {
+		mat[row][column] = value;
+	}
+
 	/**
 	 * Returns a value in the matrix (zero-indexed).
 	 *

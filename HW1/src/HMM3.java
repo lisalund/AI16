@@ -40,6 +40,8 @@ public class HMM3 {
 	}
 
 	private Matrix calculateMaxes(Matrix[] maxCols) {
+		Matrix states = new Matrix(maxCols[0].rows, 1, -1);
+
 		// For every row of a maxcol
 		for (int i = 0; i < maxCols[0].rows; i++) {
 			double max = -1;
@@ -47,15 +49,13 @@ public class HMM3 {
 				max = Math.max(max, maxCols[j].getElement(j, 0));
 			}
 
-			for (Matrix maxCol : maxCols) {
-				if (max == maxCol.getElement(i, 0)) {
-
-
+			for (int j = 0; j < maxCols.length; j++) {
+				if (max == maxCols[j].getElement(i, 0)) {
+					states.setElement(i, 0, j); // Set the state for this row to j
 				}
 			}
-
 		}
 
-		return null;
+		return states;
 	}
 }
