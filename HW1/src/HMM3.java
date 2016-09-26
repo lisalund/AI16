@@ -21,7 +21,7 @@ public class HMM3 {
 
 			// For each "max column" (as many as the number of states)
 			for (int j = 0; j < a.columns; j++) {
-				Matrix firstMaxCol = new Matrix(a.rows, 1, prevDeltaCol.getElement(j - 1, 0));
+				Matrix firstMaxCol = new Matrix(a.rows, 1, prevDeltaCol.getElement(j, 0));
 				Matrix secondMaxCol = a.getRow(o[i]).transpose();
 				Matrix thirdMaxCol = b.getColumn(o[i]);
 
