@@ -50,8 +50,8 @@ public class HMM3 {
 		// For every row of a maxcol
 		for (int i = 0; i < maxCols[0].rows; i++) {
 			double max = -1;
-			for (int j = 0; j < maxCols.length; j++) {
-				max = Math.max(max, maxCols[j].getElement(i, 0));
+			for (Matrix maxCol : maxCols) {
+				max = Math.max(max, maxCol.getElement(i, 0));
 			}
 
 			deltaCol.setElement(i, 0, max);
