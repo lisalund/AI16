@@ -47,9 +47,9 @@ class Utility {
 	/**
 	 * Print an array as specified output.
 	 */
-	public void printArray(int[] array) {
+	void printArray(int[] array) {
 		for (int i = 0; i < array.length; i++) {
-			System.out.print(i);
+			System.out.print(array[i]);
 			if (i != array.length - 1) {
 				System.out.print(" ");
 			}
