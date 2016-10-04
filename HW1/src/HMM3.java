@@ -51,7 +51,7 @@ public class HMM3 {
 		for (int i = 0; i < maxCols[0].rows; i++) {
 			double max = -1;
 			for (int j = 0; j < maxCols.length; j++) {
-				max = Math.max(max, maxCols[j].getElement(j, 0));
+				max = Math.max(max, maxCols[j].getElement(i, 0));
 			}
 
 			deltaCol.setElement(i, 0, max);
