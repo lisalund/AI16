@@ -3,15 +3,15 @@ public class HMM3 {
 		Utility u = new Utility();
 
 		// Parse input
-		Matrix a = u.parseMatrix();
-		Matrix b = u.parseMatrix();
-		Matrix pi = u.parseMatrix();
+		Matrix a = u.parseMatrix().logElementWise();
+		Matrix b = u.parseMatrix().logElementWise();
+		Matrix pi = u.parseMatrix().logElementWise();
 		int[] o = u.parseEmissions();
 
 		Matrix delta = new Matrix(a.rows, o.length);
 		Matrix states = new Matrix(a.rows, o.length, -1);
 
-		Matrix deltaCol = pi.transpose().multiplyElementWise(b.getColumn(o[0]));
+		Matrix deltaCol = pi.transpose().sumElementWise(b.getColumn(o[0]));
 		delta.setColumn(0, deltaCol);
 
 		//For each delta column (othermost loop)
@@ -25,7 +25,7 @@ public class HMM3 {
 				Matrix secondMaxCol = a.getRow(j).transpose();
 				Matrix thirdMaxCol = b.getColumn(o[i]);
 
-				Matrix fullMaxCol = firstMaxCol.multiplyElementWise(secondMaxCol).multiplyElementWise(thirdMaxCol);
+				Matrix fullMaxCol = firstMaxCol.sumElementWise(secondMaxCol).sumElementWise(thirdMaxCol);
 				maxCols[j] = fullMaxCol;
 			}
 
@@ -49,7 +49,7 @@ public class HMM3 {
 
 		// For every row of a maxcol
 		for (int i = 0; i < maxCols[0].rows; i++) {
-			double max = -1;
+			double max = Double.NEGATIVE_INFINITY;
 			for (Matrix maxCol : maxCols) {
 				max = Math.max(max, maxCol.getElement(i, 0));
 			}
@@ -65,7 +65,7 @@ public class HMM3 {
 
 		// For every row of a maxcol
 		for (int i = 0; i < maxCols[0].rows; i++) {
-			double max = -1;
+			double max = Double.NEGATIVE_INFINITY;
 			int maxState = -1;
 			for (int j = 0; j < maxCols.length; j++) {
 				if (maxCols[j].getElement(i, 0) > max) {
@@ -85,7 +85,7 @@ public class HMM3 {
 
 		// Do one column at a time
 		for (int i = 1; i < delta.columns; i++) {
-			double max = -1;
+			double max = Double.NEGATIVE_INFINITY;
 			int maxState = -1;
 			for (int j = 0; j < delta.rows; j++) {
 				double value = delta.getElement(j, i);
@@ -99,7 +99,7 @@ public class HMM3 {
 		}
 
 		Matrix lastColumn = delta.getColumn(delta.columns - 1);
-		double max = -1;
+		double max = Double.NEGATIVE_INFINITY;
 		int maxState = -1;
 		for (int i = 0; i < lastColumn.rows; i++) {
 			if (lastColumn.getElement(i, 0) > max) {
