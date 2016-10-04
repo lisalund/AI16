@@ -5,15 +5,15 @@ import java.util.Arrays;
  * @author lisa
  *
  */
-public class Matrix {
-	public int rows;
-	public int columns;
-	public double[][] mat;
+class Matrix {
+	int rows;
+	int columns;
+	private double[][] mat;
 
 	/**
 	 * Constructor for unfilled matrices, where we do not know the values yet
 	 */
-	public Matrix(int rows, int columns){
+	Matrix(int rows, int columns) {
 		this.rows = rows;
 		this.columns = columns;
 		this.mat = new double[rows][columns];
@@ -23,9 +23,9 @@ public class Matrix {
 	 * Fills the matrix with values from the token array given.
 	 * Note that the first two values in tokens are
 	 * row and column data, so these should be skipped.
-	 * @param tokens
+	 * @param tokens Supplied input
 	 */
-	public Matrix(String[] tokens) {
+	Matrix(String[] tokens) {
 		this.rows = Integer.parseInt(tokens[0]);
 		this.columns = Integer.parseInt(tokens[1]);
 		this.mat = new double[rows][columns];
@@ -42,7 +42,7 @@ public class Matrix {
 	/**
 	 * Constructor for complete, filled-out matrices
 	 */
-	public Matrix(int rows, int columns, double[][] matrix) {
+	Matrix(int rows, int columns, double[][] matrix) {
 		this.rows = rows;
 		this.columns = columns;
 		this.mat = matrix;
@@ -51,7 +51,7 @@ public class Matrix {
 	/**
 	 * Constructor for a matrix with all non-zero values
 	 */
-	public Matrix(int rows, int columns, double fillWith) {
+	Matrix(int rows, int columns, double fillWith) {
 		this.rows = rows;
 		this.columns = columns;
 		this.mat = new double[rows][columns];
@@ -63,7 +63,7 @@ public class Matrix {
 	/**
 	 * Returns the two-dimentional matrix
 	 */
-	public double[][] getMatrix(){
+	private double[][] getMatrix() {
 		return mat;
 	}
 	
@@ -71,7 +71,7 @@ public class Matrix {
 	 * 
 	 * @return the transposed matrix as a Matrix object
 	 */
-	public Matrix transpose(){
+	Matrix transpose() {
 		double[][] trans = new double[columns][rows];
 		
 		for(int i = 0; i < rows; i++){
@@ -88,7 +88,7 @@ public class Matrix {
 	 * @param column the index of the column wanted (0 indexed)
 	 * @return a column vector from the matrix
 	 */
-	public Matrix getColumn(int column){
+	Matrix getColumn(int column) {
 		Matrix col = new Matrix(rows, 1, new double[rows][1]);
 		
 		for(int i = 0; i < rows; i++){
@@ -100,21 +100,19 @@ public class Matrix {
 	/**
 	 * Get a (zero-indexed) row.
 	 */
-	public Matrix getRow(int rowIndex) {
+	Matrix getRow(int rowIndex) {
 		Matrix row = new Matrix(1, columns);
 
-		for (int i = 0; i < columns; i++) {
-			row.mat[0][i] = mat[rowIndex][i];
-		}
+		System.arraycopy(mat[rowIndex], 0, row.mat[0], 0, columns);
 		return row;
 	}
 
 	/**
 	 * Overwrites a column in this with another column of the same height.
-	 * @param column
-	 * @param matrix
+	 * @param column The column to write to
+	 * @param matrix The column to write
 	 */
-	public void setColumn(int column, Matrix matrix) {
+	void setColumn(int column, Matrix matrix) {
 		if ((this.rows != matrix.rows || this.columns != matrix.columns) && !(matrix.rows == 1 || matrix.columns == 1)) {
 			throw new IllegalArgumentException("Input matrix must be a vector with the same length as a matrix column.");
 		}
@@ -128,18 +126,18 @@ public class Matrix {
 		}
 	}
 
-	public void setElement(int row, int column, double value) {
+	void setElement(int row, int column, double value) {
 		mat[row][column] = value;
 	}
 
 	/**
 	 * Returns a value in the matrix (zero-indexed).
 	 *
-	 * @param row
-	 * @param column
-	 * @return
+	 * @param row The row the element is in
+	 * @param column The column the element is in
+	 * @return The element
 	 */
-	public double getElement(int row, int column) {
+	double getElement(int row, int column) {
 		return mat[row][column];
 	}
 
@@ -150,18 +148,18 @@ public class Matrix {
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		sb.append(rows);
-		sb.append(" " + columns);
+		sb.append(" ").append(columns);
 		
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < columns; j++){
-				sb.append(" " + mat[i][j]);
+				sb.append(" ").append(mat[i][j]);
 			}	
 		}
 		
 		return sb.toString();
 	}
 
-	public Matrix multiply(Matrix rightMatrix) {
+	Matrix multiply(Matrix rightMatrix) {
 		double[][] a = mat;
 		double[][] b = rightMatrix.mat;
 
@@ -183,17 +181,18 @@ public class Matrix {
 		return new Matrix(rows, cols, res);
 	}
 
-	public Matrix logElementWise() {
+	Matrix logElementWise() {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				mat[i][j] = Math.log(mat[i][j]);
 			}
 		}
 
+
 		return this;
 	}
 
-	public Matrix sumElementWise(Matrix rightMatrix) {
+	Matrix sumElementWise(Matrix rightMatrix) {
 		double[][] a = mat;
 		double[][] b = rightMatrix.getMatrix();
 
@@ -214,7 +213,7 @@ public class Matrix {
 		return new Matrix(rows, columns, res);
 	}
 
-	public Matrix multiplyElementWise(Matrix rightMatrix) {
+	Matrix multiplyElementWise(Matrix rightMatrix) {
 		double[][] a = mat;
 		double[][] b = rightMatrix.getMatrix();
 
@@ -235,7 +234,7 @@ public class Matrix {
 		return new Matrix(rows, columns, res);
 	}
 
-	public void printMatrix() {
+	void printMatrix() {
 		double[][] matrix = mat;
 
 		for (double[] row : matrix) {
@@ -249,9 +248,9 @@ public class Matrix {
 	/**
 	 * Returns the sum of all elements.
 	 *
-	 * @return
+	 * @return The sum of all elements
 	 */
-	public double sum() {
+	double sum() {
 		double sum = 0;
 		for (double[] row : mat) {
 			for (double element : row) {
