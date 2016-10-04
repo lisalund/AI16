@@ -66,15 +66,15 @@ public class HMM3 {
 		// For every row of a maxcol
 		for (int i = 0; i < maxCols[0].rows; i++) {
 			double max = -1;
+			int maxState = -1;
 			for (int j = 0; j < maxCols.length; j++) {
-				max = Math.max(max, maxCols[j].getElement(j, 0));
-			}
-
-			for (int j = 0; j < maxCols.length; j++) {
-				if (max == maxCols[j].getElement(i, 0)) {
-					states.setElement(i, 0, j); // Set the state for this row to j
+				if (maxCols[j].getElement(i, 0) > max) {
+					max = maxCols[j].getElement(i, 0);
+					maxState = j;
 				}
 			}
+
+			states.setElement(i, 0, maxState);
 		}
 
 		return states;
