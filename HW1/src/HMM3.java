@@ -8,10 +8,13 @@ public class HMM3 {
 		Matrix pi = u.parseMatrix();
 		int[] o = u.parseEmissions();
 
-		Matrix delta = new Matrix(a.rows, o.length);
-		Matrix states = new Matrix(a.rows, o.length, -1);
+		int numStates = a.rows;
+		int numObservations = o.length;
 
-		double[] normalizationFactors = new double[o.length];
+		Matrix delta = new Matrix(numStates, numObservations);
+		Matrix states = new Matrix(numStates, numObservations, -1);
+
+		double[] normalizationFactors = new double[numObservations];
 
 		Matrix deltaCol = pi.transpose().multiplyElementWise(b.getColumn(o[0]));
 		double normalizationFactor = 1 / deltaCol.sum();
@@ -22,21 +25,24 @@ public class HMM3 {
 		//For each delta column (othermost loop)
 		for (int i = 1; i < delta.columns; i++) {
 			Matrix prevDeltaCol = delta.getColumn(i - 1);
-			Matrix[] maxCols = new Matrix[a.columns];
+			Matrix[] maxCols = new Matrix[numStates];
+			Matrix[] indexCols = new Matrix[numStates];
 
 			// For each "max column" (as many as the number of states)
-			for (int j = 0; j < a.columns; j++) {
-				Matrix firstMaxCol = new Matrix(a.rows, 1, prevDeltaCol.getElement(j, 0));
+			for (int j = 0; j < numStates; j++) {
+				Matrix firstMaxCol = new Matrix(numStates, 1, prevDeltaCol.getElement(j, 0));
 				Matrix secondMaxCol = a.getRow(j).transpose();
 				Matrix thirdMaxCol = b.getColumn(o[i]);
 
 				Matrix fullMaxCol = firstMaxCol.multiplyElementWise(secondMaxCol).multiplyElementWise(thirdMaxCol);
+				Matrix indexCol = firstMaxCol.multiplyElementWise(secondMaxCol);
 				maxCols[j] = fullMaxCol;
+				indexCols[j] = indexCol;
 			}
 
 			// From maxCols, extract both delta column and state column
 			deltaCol = calculateDeltaColumn(maxCols);
-			Matrix stateCol = calculateStateColumn(maxCols);
+			Matrix stateCol = calculateStateColumn(indexCols);
 
 			normalizationFactor = 1 / deltaCol.sum();
 			deltaCol = deltaCol.multiplyElementWise(normalizationFactor);
