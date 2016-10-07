@@ -213,6 +213,10 @@ class Matrix {
 		return new Matrix(rows, columns, res);
 	}
 
+	Matrix multiplyElementWise(double term) {
+		return multiplyElementWise(new Matrix(rows, columns, term));
+	}
+
 	Matrix multiplyElementWise(Matrix rightMatrix) {
 		double[][] a = mat;
 		double[][] b = rightMatrix.getMatrix();

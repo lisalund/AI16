@@ -11,7 +11,12 @@ public class HMM3 {
 		Matrix delta = new Matrix(a.rows, o.length);
 		Matrix states = new Matrix(a.rows, o.length, -1);
 
+		double[] normalizationFactors = new double[o.length];
+
 		Matrix deltaCol = pi.transpose().multiplyElementWise(b.getColumn(o[0]));
+		double normalizationFactor = 1 / deltaCol.sum();
+		deltaCol = deltaCol.multiplyElementWise(normalizationFactor);
+		normalizationFactors[0] = normalizationFactor;
 		delta.setColumn(0, deltaCol);
 
 		//For each delta column (othermost loop)
@@ -32,6 +37,10 @@ public class HMM3 {
 			// From maxCols, extract both delta column and state column
 			deltaCol = calculateDeltaColumn(maxCols);
 			Matrix stateCol = calculateStateColumn(maxCols);
+
+			normalizationFactor = 1 / deltaCol.sum();
+			deltaCol = deltaCol.multiplyElementWise(normalizationFactor);
+			normalizationFactors[i] = normalizationFactor;
 
 			delta.setColumn(i, deltaCol);
 			states.setColumn(i, stateCol);
