@@ -25,8 +25,22 @@ public class Tester {
 		};
 		Matrix b = new Matrix(3, 2, bMatrix);
 
+		Matrix c = new Matrix(1, 4, -2);
+
 		Matrix res = a.multiply(b);
 		res.printMatrix();
+
+		for (double el : a) {
+			System.out.println(el);
+		}
+
+		for (double el : b) {
+			System.out.println(el);
+		}
+
+		for (double el : c) {
+			System.out.println(el);
+		}
 	}
 
 	private static void printMatrices(Matrix a, Matrix b, Matrix pi) {

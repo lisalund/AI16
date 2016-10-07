@@ -1,11 +1,12 @@
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Class for the matrices used in the HMM lab
  * @author lisa
  *
  */
-class Matrix {
+class Matrix implements Iterable<Double> {
 	int rows;
 	int columns;
 	private double[][] mat;
@@ -263,5 +264,26 @@ class Matrix {
 		}
 
 		return sum;
+	}
+
+	@Override
+	public Iterator<Double> iterator() {
+		return new MatrixIterator();
+	}
+
+	class MatrixIterator implements Iterator {
+		private int index = 0;
+
+		@Override
+		public boolean hasNext() {
+			return index < rows * columns;
+		}
+
+		@Override
+		public Object next() {
+			double elem = getElement(index / columns, index % columns);
+			index++;
+			return elem;
+		}
 	}
 }
