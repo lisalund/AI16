@@ -8,7 +8,7 @@ import java.util.Arrays;
 class Matrix {
 	int rows;
 	int columns;
-	private double[][] mat;
+	double[][] mat;
 
 	/**
 	 * Constructor for unfilled matrices, where we do not know the values yet
@@ -259,5 +259,57 @@ class Matrix {
 		}
 
 		return sum;
+	}
+	
+	/**
+	 * @return a column- or row matrix as an array
+	 */
+	double[] toArray(){
+		if(rows != 1 && columns != 1){
+			throw new IllegalArgumentException("Must be a row- or column vector to be turned into array!");
+		}
+		double[] newArray = null; 
+		if(rows == 1){
+			newArray = new double[columns];
+			for(int i = 0; i < columns; i++){
+				newArray[i] = mat[0][i];
+			}
+		}
+		else{
+			newArray = new double[rows];
+			for(int i = 0; i < rows; i++){
+				newArray[i] = mat[i][0];
+			}
+		}
+		
+		return newArray;
+	}
+	
+	Matrix dotMultiply(Matrix mat2){
+		double[][] res = null;
+		double element;
+		
+		if(rows == mat2.rows && columns == mat2.columns && columns == 1){
+			res = new double[rows][1];
+			for(int i = 0; i < rows; i++){
+				res[i][0] = mat[i][0] * mat2.mat[i][0];
+			}
+		} else {
+			res = new double[rows][columns];
+			
+			if(rows != mat2.columns){
+				throw new IllegalArgumentException("Dot multiplications: Invalid matrix dimension");
+			}
+			
+			for(int i = 0; i < rows; i++){
+				for(int j = 0; j < mat2.columns; j++){
+					for(int k = 0; k < columns; k++){
+						res[i][j] += mat[i][k] * mat2.mat[k][j]; 
+					}
+				}
+			}
+		}
+		
+		return new Matrix(res.length, res[0].length, res);
 	}
 }
