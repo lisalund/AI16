@@ -2,7 +2,6 @@ import java.util.Arrays;
 
 /**
  * Class for the matrices used in the HMM lab
- * @author lisa
  *
  */
 class Matrix {
@@ -45,6 +44,16 @@ class Matrix {
 	Matrix(int rows, int columns, double[][] matrix) {
 		this.rows = rows;
 		this.columns = columns;
+		this.mat = matrix;
+	}
+	
+	/**
+	 * Constructor for complete, filled-out matrices
+	 * without need to fill in rows and columns...
+	 */
+	Matrix(double[][] matrix) {
+		this.rows = matrix.length;
+		this.columns = matrix[0].length;
 		this.mat = matrix;
 	}
 	

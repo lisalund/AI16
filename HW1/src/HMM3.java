@@ -35,7 +35,7 @@ public class HMM3 {
 
 			// From maxCols, extract both delta column and state column
 			deltaCol = calculateDeltaColumn(maxCols);
-			Matrix stateCol = calculateStateColumn(maxCols);
+			Matrix stateCol = new Matrix(new double[1][1]);
 
 			delta.setColumn(i, deltaCol);
 			//states.setColumn(i, stateCol);
