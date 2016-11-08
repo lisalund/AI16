@@ -3,13 +3,12 @@ import java.util.Iterator;
 
 /**
  * Class for the matrices used in the HMM lab
- * @author lisa
  *
  */
 class Matrix implements Iterable<Double> {
 	int rows;
 	int columns;
-	private double[][] mat;
+	double[][] mat;
 
 	/**
 	 * Constructor for unfilled matrices, where we do not know the values yet
@@ -46,6 +45,16 @@ class Matrix implements Iterable<Double> {
 	Matrix(int rows, int columns, double[][] matrix) {
 		this.rows = rows;
 		this.columns = columns;
+		this.mat = matrix;
+	}
+	
+	/**
+	 * Constructor for complete, filled-out matrices
+	 * without need to fill in rows and columns...
+	 */
+	Matrix(double[][] matrix) {
+		this.rows = matrix.length;
+		this.columns = matrix[0].length;
 		this.mat = matrix;
 	}
 	
@@ -214,10 +223,6 @@ class Matrix implements Iterable<Double> {
 		return new Matrix(rows, columns, res);
 	}
 
-	Matrix multiplyElementWise(double term) {
-		return multiplyElementWise(new Matrix(rows, columns, term));
-	}
-
 	Matrix multiplyElementWise(Matrix rightMatrix) {
 		double[][] a = mat;
 		double[][] b = rightMatrix.getMatrix();
@@ -269,6 +274,58 @@ class Matrix implements Iterable<Double> {
 	@Override
 	public Iterator<Double> iterator() {
 		return new MatrixIterator();
+	}
+
+	/**
+	 * @return a column- or row matrix as an array
+	 */
+	double[] toArray(){
+		if(rows != 1 && columns != 1){
+			throw new IllegalArgumentException("Must be a row- or column vector to be turned into array!");
+		}
+		double[] newArray = null;
+		if(rows == 1){
+			newArray = new double[columns];
+			for(int i = 0; i < columns; i++){
+				newArray[i] = mat[0][i];
+			}
+		}
+		else{
+			newArray = new double[rows];
+			for(int i = 0; i < rows; i++){
+				newArray[i] = mat[i][0];
+			}
+		}
+
+		return newArray;
+	}
+	
+	Matrix dotMultiply(Matrix mat2){
+		double[][] res = null;
+		double element;
+
+		if(rows == mat2.rows && columns == mat2.columns && columns == 1){
+			res = new double[rows][1];
+			for(int i = 0; i < rows; i++){
+				res[i][0] = mat[i][0] * mat2.mat[i][0];
+			}
+		} else {
+			res = new double[rows][columns];
+
+			if(rows != mat2.columns){
+				throw new IllegalArgumentException("Dot multiplications: Invalid matrix dimension");
+			}
+
+			for(int i = 0; i < rows; i++){
+				for(int j = 0; j < mat2.columns; j++){
+					for(int k = 0; k < columns; k++){
+						res[i][j] += mat[i][k] * mat2.mat[k][j];
+					}
+				}
+			}
+		}
+
+		return new Matrix(res.length, res[0].length, res);
 	}
 
 	class MatrixIterator implements Iterator {
