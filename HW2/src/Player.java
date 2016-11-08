@@ -1,8 +1,8 @@
 import java.util.Vector;
 
-public class Player {
-    /**
-     * Performs a move
+class Player {
+	/**
+	 * Performs a move
      *
      * @param gameState
      *            the current state of the board
@@ -10,19 +10,17 @@ public class Player {
      *            time before which we must have returned
      * @return the next state the board is in after our move
      */
-    public GameState play(final GameState gameState, final Deadline deadline) {
-        Vector<GameState> nextStates = new Vector<GameState>();
-        gameState.findPossibleMoves(nextStates);
+	GameState play(final GameState gameState, final Deadline deadline) {
+		Vector<GameState> nextStates = new Vector<>();
+		gameState.findPossibleMoves(nextStates);
 
         if (nextStates.size() == 0) {
             // Must play "pass" move if there are no other moves possible.
             return new GameState(gameState, new Move());
         }
 
-        /**
-         * Here you should write your algorithms to get the best next move, i.e.
-         * the best next state. This skeleton returns a random move instead.
-         */
+		// Here you should write your algorithms to get the best next move, i.e.
+		// the best next state. This skeleton returns a random move instead.
 		int bestMove = -1;
 		int index = 0;
 
@@ -43,15 +41,15 @@ public class Player {
 	 * @param currentState the current game state according to the algorithm
 	 * @param player       true if it's the player's turn, false if it's the opponent's toggles recursively
 	 * @param depth        current depth, decreases recursively
-	 * @return
+	 * @return the best possible value
 	 */
-	public int minMax(GameState currentState, boolean player, int depth) {
+	private int minMax(GameState currentState, boolean player, int depth) {
 
 		if (currentState.isEOG() || depth == 0) {
 			return terminalStateVal(currentState, player);
 		}
 
-		Vector<GameState> nextState = new Vector<GameState>();
+		Vector<GameState> nextState = new Vector<>();
 		currentState.findPossibleMoves(nextState); //fills nextState vector
 
 		int v, bestPossible;
