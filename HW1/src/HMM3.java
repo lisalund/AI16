@@ -1,38 +1,32 @@
-/**
- * Vi provar igen.
- *
- */
 public class HMM3 {
 	private int[] o;
 	private int[] path;
 	private double[][] map;
-	private Utility u = new Utility();
 	private Matrix a;
 	private Matrix b;
 
 	private HMM3() {
-
 		// Parse input
+		Utility u = new Utility();
+
 		this.a = u.parseMatrix();
 		this.b = u.parseMatrix();
 		Matrix pi = u.parseMatrix();
 		this.o = u.parseEmissions();
-		
+
 		double[] delta = pi.transpose().dotMultiply(b.getColumn(o[0])).toArray();
-		
+
 		this.path = new int[o.length];
 		this.map = new double[o.length][delta.length];
-		
-		double [] forw = forwards(delta);
+
+		double[] forw = forwards(delta);
 		backtrack(forw);
-		
+
 		System.out.println(toString());
-		
 	}
 
 	public static void main(String[] args) {
 		new HMM3();
-
 	}
 
 	private double[] forwards(double[] initDelta) {
@@ -42,58 +36,54 @@ public class HMM3 {
 		double[] delta = initDelta;
 		double[] nextDelta;
 
-		for(int i = 1; i < this.o.length; i++){
+		for (int i = 1; i < this.o.length; i++) {
 			nextDelta = new double[delta.length];
 
-			for(int j = 0; j < delta.length; j++){
+			for (int j = 0; j < delta.length; j++) {
 				tmpMax = 0; //reset the temporary ArgMax probability
 
-				for(int k = 0; k < delta.length; k++){
-
+				// max_(j ∈ [1,..N])
+				for (int k = 0; k < delta.length; k++) {
 					//calculate probability of next node from current
-					tmpNext = delta[k] * this.a.mat[k][j] * this.b.mat[j][this.o[i]];
+					tmpNext = this.a.mat[k][j] * delta[k] * this.b.mat[j][this.o[i]]; // a_j,i * δ_t−1(j) * b_i(o_t)
 
-					if(tmpNext > tmpMax){
+					if (tmpNext > tmpMax) {
 						tmpMax = tmpNext;
 						this.map[i][j] = k; //store current node
 					}
 				}
+
 				nextDelta[j] = tmpMax;
 			}
 
 			delta = nextDelta;
-			//System.out.println("NextDelta: " + arrayToString(nextDelta));
 		}
-		//System.out.println("delta: " + arrayToString(delta));
+
 		return delta;
 	}
 
 	private void backtrack(double[] delta) {
 		double tmp = 0;
 
-		for(int i = this.o.length - 1; i > 0; i--){
-
-			//check if first step in backtracking
-			if(i == this.o.length-1){
-
-				//check most probable final state
-				for(int j = 0; j < delta.length; j++){
-					if(tmp < delta[j]){
+		for (int i = this.o.length - 1; i > 0; i--) {
+			// Check if first step in backtracking
+			if (i == this.o.length - 1) {
+				// Check most probable final state
+				for (int j = 0; j < delta.length; j++) {
+					if (tmp < delta[j]) {
 						tmp = delta[j];
 						this.path[i] = j;
-						this.path[i-1] = (int) this.map[i][j];
+						this.path[i - 1] = (int) this.map[i][j];
 					}
 				}
-			}
-			else{
-				//backtrack
-				this.path[i-1] = (int) this.map[i][this.path[i]];
-
+			} else {
+				// Backtrack
+				this.path[i - 1] = (int) this.map[i][this.path[i]];
 			}
 		}
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int aPath : this.path) {
 			sb.append(aPath).append(" ");
@@ -101,16 +91,4 @@ public class HMM3 {
 
 		return sb.toString();
 	}
-	
-	/**
-	 * used for test prints
-	 */
-    public String arrayToString(double[] a){
-    	StringBuilder sb = new StringBuilder();
-    	for(double element : a){
-			sb.append(element).append(" ");
-		}
-		return sb.toString();
-    }
-
 }
