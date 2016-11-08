@@ -1,150 +1,122 @@
-import java.util.Arrays;
-
+/**
+ * Vi provar igen.
+ *
+ */
 public class HMM3 {
-	private HMM3() {
-		Utility u = new Utility();
+	int[] o;
+	int[] path;
+	double[][] map;
+	Utility u = new Utility();
+	private Matrix a;
+	private Matrix b;
+	private Matrix pi;
+
+	public HMM3() {
 
 		// Parse input
-		Matrix a = u.parseMatrix().logElementWise();
-		Matrix b = u.parseMatrix().logElementWise();
-		Matrix pi = u.parseMatrix().logElementWise();
-		int[] o = u.parseEmissions();
-
-		Matrix delta = new Matrix(a.rows, o.length);
-		State[][] states = new State[a.rows][o.length];
-
-		Matrix deltaCol = pi.transpose().sumElementWise(b.getColumn(o[0]));
-		delta.setColumn(0, deltaCol);
-
-		//For each delta column (othermost loop)
-		int[] prevstate = new int[delta.columns];
-		Arrays.fill(prevstate, -1);
-		for (int i = 1; i < delta.columns; i++) {
-			Matrix prevDeltaCol = delta.getColumn(i - 1);
-			Matrix[] maxCols = new Matrix[a.columns];
-
-			// For each "max column" (as many as the number of states)
-			for (int j = 0; j < a.columns; j++) {
-				Matrix firstMaxCol = new Matrix(a.rows, 1, prevDeltaCol.getElement(j, 0));
-				Matrix secondMaxCol = a.getRow(j).transpose();
-				Matrix thirdMaxCol = b.getColumn(o[i]);
-
-				Matrix fullMaxCol = firstMaxCol.sumElementWise(secondMaxCol).sumElementWise(thirdMaxCol);
-				maxCols[j] = fullMaxCol;
-			}
-
-			// From maxCols, extract both delta column and state column
-			deltaCol = calculateDeltaColumn(maxCols);
-			Matrix stateCol = new Matrix(new double[1][1]);
-
-			delta.setColumn(i, deltaCol);
-			//states.setColumn(i, stateCol);
-			for(int j = 0; j < stateCol.rows; j++){
-				int elem = (int) stateCol.getElement(j, i);
-				states[j][i] = new State(elem, prevstate[i]);
-				prevstate[i] = elem;
-			}
-		}
-
-		//u.printArray(findStateSequence(delta, states));
-		backTrack(delta, states);
+		this.a = u.parseMatrix();
+		this.b = u.parseMatrix();
+		this.pi = u.parseMatrix();
+		this.o = u.parseEmissions();
+		
+		double[] delta = pi.transpose().dotMultiply(b.getColumn(o[0])).toArray();
+		
+		this.path = new int[o.length];
+		this.map = new double[o.length][delta.length];
+		
+		double [] forw = forwards(delta);
+		backtrack(forw);
+		
+		System.out.println(toString());
+		
 	}
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		new HMM3();
-	}
 
-	private Matrix calculateDeltaColumn(Matrix[] maxCols) {
-		Matrix deltaCol = new Matrix(maxCols[0].rows, 1, -1);
-
-		// For every row of a maxcol
-		for (int i = 0; i < maxCols[0].rows; i++) {
-			double max = Double.NEGATIVE_INFINITY;
-			for (Matrix maxCol : maxCols) {
-				max = Math.max(max, maxCol.getElement(i, 0));
-			}
-
-			deltaCol.setElement(i, 0, max);
-		}
-
-		return deltaCol;
-	}
-
-	private State[][] calculateStateColumn(Matrix[] maxCols) {
-		State[][] states = new State[maxCols[0].rows][1];
-
-		// For every row of a maxcol
-		for (int i = 0; i < maxCols[0].rows; i++) {
-			double max = Double.NEGATIVE_INFINITY;
-			State maxState = null;
-			for (int j = 0; j < maxCols.length; j++) {
-				if (maxCols[j].getElement(i, 0) > max) {
-					max = maxCols[j].getElement(i, 0);
-					maxState = new State(j);
-				}
-			}
-
-			states[i][0] = maxState;
-		}
-
-		return states;
-	}
-
-	private int[] findStateSequence(Matrix delta, State[][] states) {
-		int[] stateSequence = new int[delta.columns];
-
-		// Do one column at a time
-		for (int i = 1; i < delta.columns; i++) {
-			double max = Double.NEGATIVE_INFINITY;
-			int maxState = -1;
-			for (int j = 0; j < delta.rows; j++) {
-				double value = delta.getElement(j, i);
-				if (value > max) {
-					max = value;
-					maxState = (int) states[j][i].getState();
-				}
-			}
-
-			stateSequence[i - 1] = maxState;
-		}
-
-		Matrix lastColumn = delta.getColumn(delta.columns - 1);
-		double max = Double.NEGATIVE_INFINITY;
-		int maxState = -1;
-		for (int i = 0; i < lastColumn.rows; i++) {
-			if (lastColumn.getElement(i, 0) > max) {
-				max = lastColumn.getElement(i, 0);
-				maxState = i;
-			}
-		}
-		stateSequence[stateSequence.length - 1] = maxState;
-
-		return stateSequence;
 	}
 	
-	public void backTrack(Matrix delta, State[][] states){
+	public double[] forwards(double[] initDelta){
+		double tmpNext; //temp. probability of next state in delta sequence
+		double tmpMax; // temp. probability of most probable next state in delta seq.
+
+		double[] delta = initDelta;
+		double[] nextDelta;
+
+		for(int i = 1; i < this.o.length; i++){
+			nextDelta = new double[delta.length];
+
+			for(int j = 0; j < delta.length; j++){
+				tmpMax = 0; //reset the temporary ArgMax probability
+
+				for(int k = 0; k < delta.length; k++){
+
+					//calculate probability of next node from current
+					tmpNext = delta[k] * this.a.mat[k][j] * this.b.mat[j][this.o[i]];
+
+					if(tmpNext > tmpMax){
+						tmpMax = tmpNext;
+						this.map[i][j] = k; //store current node
+					}
+				}
+				nextDelta[j] = tmpMax;
+			}
+
+			delta = nextDelta;
+			//System.out.println("NextDelta: " + arrayToString(nextDelta));
+		}
+		//System.out.println("delta: " + arrayToString(delta));
+		return delta;
+	}
+	
+	public void backtrack(double[] delta){
+		double tmp = 0;
+
+		for(int i = this.o.length - 1; i > 0; i--){
+
+			//check if first step in backtracking
+			if(i == this.o.length-1){
+
+				//check most probable final state
+				for(int j = 0; j < delta.length; j++){
+					if(tmp < delta[j]){
+						tmp = delta[j];
+						this.path[i] = j;
+						this.path[i-1] = (int) this.map[i][j];
+					}
+				}
+			}
+			else{
+				//backtrack
+				this.path[i-1] = (int) this.map[i][this.path[i]];
+
+			}
+		}
+	}
+	
+	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		State lastState;
+		for(int i = 0; i < this.path.length; i++){
+			sb.append(this.path[i] + " ");
+		}
+
+		return sb.toString();
 	}
 	
-	private class State{
-		private int state;
-		private int cameFrom = -1;
-		
-		//Constructor for the first state
-		public State(int state){
-			this.state = state;
-		}
-		
-		//Constructor for other states
-		public State(int state, int cameFrom){
-			this.state = state;
-			this.cameFrom = cameFrom;
-		}
-		
-		public int getState(){
-			return state;
-		}
-		
-	}
+	/**
+	 * used for test prints
+	 * @param a
+	 * @return
+	 */
+    public String arrayToString(double[] a){
+    	StringBuilder sb = new StringBuilder();
+    	for(double element : a){
+    		sb.append(element + " ");
+    	}
+    	return sb.toString();
+    }
+
 }
