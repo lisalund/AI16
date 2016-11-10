@@ -44,13 +44,12 @@ class Player {
 	 * @return the best possible value
 	 */
 	private int minMax(GameState currentState, boolean player, int depth) {
-
 		if (currentState.isEOG() || depth == 0) {
 			return terminalStateVal(currentState, player);
 		}
 
 		Vector<GameState> nextState = new Vector<>();
-		currentState.findPossibleMoves(nextState); //fills nextState vector
+		currentState.findPossibleMoves(nextState); // Fills nextState vector
 
 		int v, bestPossible;
 
@@ -67,6 +66,7 @@ class Player {
 				bestPossible = Math.min(v, bestPossible);
 			}
 		}
+
 		return bestPossible;
 	}
 
@@ -81,13 +81,11 @@ class Player {
 		if (player) {
 			if (currentState.isXWin()) return 1;
 			if (currentState.isOWin()) return -1;
-		}
-		if (!player) {
+		} else {
 			if (currentState.isXWin()) return -1;
 			if (currentState.isOWin()) return 1;
 		}
 
 		return 0;
-
 	}
 }
